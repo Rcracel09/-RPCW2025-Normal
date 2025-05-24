@@ -1,0 +1,313 @@
+# 12 Quais são os conceitos ensinados por um determinado mestre (arbitra um)?
+# Escolhi Albert Einstein como o mestre para esta query
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?conceito_nome
+WHERE {
+  ?mestre rdf:type sapientia:Mestre ;
+          sapientia:nome "Albert Einstein" ;
+          sapientia:ensina ?disciplina .
+  
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:nome ?conceito_nome ;
+            sapientia:eEstudadoEm ?disciplina .
+}
+
+# 13 Que obras explicam o conceito de "Relatividade"?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?titulo_obra
+WHERE {
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:nome "Relatividade" .
+  
+  ?obra rdf:type sapientia:Obra ;
+        sapientia:titulo ?titulo_obra ;
+        sapientia:explica ?conceito .
+}
+
+# 14 Em que disciplinas se estudam "Ciências Sociais"?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?disciplina_nome
+WHERE {
+  ?tipo rdf:type sapientia:TipoDeConhecimento ;
+        sapientia:nome "Ciências Sociais" .
+  
+  ?disciplina rdf:type sapientia:Disciplina ;
+              sapientia:nome ?disciplina_nome ;
+              sapientia:pertenceA ?tipo .
+}
+
+# 15 Qual é a aplicação prática dos conhecimentos em "Lógica Formal"?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?aplicacao_nome
+WHERE {
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:nome "Lógica Formal" ;
+            sapientia:temAplicacaoEm ?aplicacao .
+  
+  ?aplicacao rdf:type sapientia:Aplicacao ;
+             sapientia:nome ?aplicacao_nome .
+}
+
+# 16 Quais disciplinas pertencem ao tipo de conhecimento "Ciências Exatas"?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?disciplina_nome
+WHERE {
+  ?tipo rdf:type sapientia:TipoDeConhecimento ;
+        sapientia:nome "Ciências Exatas" .
+  
+  ?disciplina rdf:type sapientia:Disciplina ;
+              sapientia:nome ?disciplina_nome ;
+              sapientia:pertenceA ?tipo .
+}
+
+# 17 Que mestres ensinaram no século XIX?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?mestre_nome
+WHERE {
+  ?periodo rdf:type sapientia:PeriodoHistorico ;
+           sapientia:nome "Século XIX" .
+  
+  ?mestre rdf:type sapientia:Mestre ;
+          sapientia:nome ?mestre_nome ;
+          sapientia:ensinouEm ?periodo .
+}
+
+
+# 18 Que aprendizes estudam "Programação"?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?aprendiz_nome
+WHERE {
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:nome "Programação" ;
+            sapientia:eEstudadoEm ?disciplina .
+  
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:nome ?aprendiz_nome ;
+            sapientia:aprende ?disciplina .
+}
+
+# 19 Qual a distribuição de aprendizes por disciplina? (Resultado será uma lista de pares: Disciplina, número de alunos)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?disciplina_nome (COUNT(DISTINCT ?aprendiz) AS ?num_aprendizes)
+WHERE {
+  ?disciplina rdf:type sapientia:Disciplina ;
+              sapientia:nome ?disciplina_nome .
+  
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:aprende ?disciplina .
+}
+GROUP BY ?disciplina_nome
+ORDER BY DESC(?num_aprendizes) ?disciplina_nome
+
+# 20 Qual a distribuição de conceitos por período histórico? (Resultado será uma lista de pares: Período, número de conceitos)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?periodo_nome (COUNT(DISTINCT ?conceito) AS ?num_conceitos)
+WHERE {
+  ?periodo rdf:type sapientia:PeriodoHistorico ;
+           sapientia:nome ?periodo_nome .
+  
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:surgeEm ?periodo .
+}
+GROUP BY ?periodo_nome
+ORDER BY DESC(?num_conceitos) ?periodo_nome
+
+# 21 Quais os títulos das obras associadas a cada conceito? (Resultado será uma lista de pares: Conceito, Lista de títulos de obras)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?conceito_nome (GROUP_CONCAT(DISTINCT ?titulo_obra; separator=", ") AS ?obras)
+WHERE {
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:nome ?conceito_nome .
+  
+  ?obra rdf:type sapientia:Obra ;
+        sapientia:titulo ?titulo_obra ;
+        sapientia:explica ?conceito .
+}
+GROUP BY ?conceito_nome
+ORDER BY ?conceito_nome
+
+# 22 Quais os aprendizes que frequentam cada uma das disciplinas? (Resultado será uma lista de pares: Disciplina, Lista dos nomes dos aprendizes que frequentam a disciplina)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?disciplina_nome (GROUP_CONCAT(DISTINCT ?aprendiz_nome; separator=", ") AS ?aprendizes)
+WHERE {
+  ?disciplina rdf:type sapientia:Disciplina ;
+              sapientia:nome ?disciplina_nome .
+  
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:nome ?aprendiz_nome ;
+            sapientia:aprende ?disciplina .
+}
+GROUP BY ?disciplina_nome
+ORDER BY ?disciplina_nome
+
+# 23 Qual a distribuição de aprendizes por escalões etários? (Resultado será uma lista de pares: Escalão etário, número aprendizes nesse escalão)
+# Considera os seguintes escalões: [17, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 100]
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+SELECT ?escalao (COUNT(DISTINCT ?aprendiz) AS ?num_aprendizes)
+WHERE {
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:idade ?idade .
+  
+  BIND(
+    IF(?idade >= 17 && ?idade <= 34, "[17, 34]",
+      IF(?idade >= 35 && ?idade <= 44, "[35, 44]",
+        IF(?idade >= 45 && ?idade <= 54, "[45, 54]",
+          IF(?idade >= 55 && ?idade <= 64, "[55, 64]",
+            IF(?idade >= 65 && ?idade <= 74, "[65, 74]",
+              IF(?idade >= 75 && ?idade <= 100, "[75, 100]", "Outros")
+            )
+          )
+        )
+      )
+    ) AS ?escalao
+  )
+}
+GROUP BY ?escalao
+ORDER BY ?escalao
+
+# 24 Cria uma nova relação na ontologia, estudaCom, que relaciona um aluno com um mestre
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+INSERT DATA {
+  sapientia:estudaCom rdf:type owl:ObjectProperty ;
+    rdfs:label "estuda com" ;
+    rdfs:domain sapientia:Aprendiz ;
+    rdfs:range sapientia:Mestre .
+}
+
+# 25.1 Query CONSTRUCT para calcular os novos triplos da nova relação estudaCom
+# Um aprendiz estuda com um mestre se o aprendiz aprende uma disciplina que é ensinada por esse mestre
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+CONSTRUCT {
+  ?aprendiz sapientia:estudaCom ?mestre .
+}
+WHERE {
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:aprende ?disciplina .
+  
+  ?mestre rdf:type sapientia:Mestre ;
+          sapientia:ensina ?disciplina .
+}
+
+# 25.2 Query INSERT para adicionar os novos triplos da relação estudaCom à ontologia
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+INSERT {
+  ?aprendiz sapientia:estudaCom ?mestre .
+}
+WHERE {
+  ?aprendiz rdf:type sapientia:Aprendiz ;
+            sapientia:aprende ?disciplina .
+  
+  ?mestre rdf:type sapientia:Mestre ;
+          sapientia:ensina ?disciplina .
+}
+
+# 26 Cria uma nova relação na ontologia, daBasesPara, que relaciona uma disciplina com uma aplicação
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+INSERT DATA {
+  sapientia:daBasesPara rdf:type owl:ObjectProperty ;
+    rdfs:label "dá bases para" ;
+    rdfs:domain sapientia:Disciplina ;
+    rdfs:range sapientia:Aplicacao .
+}
+
+# 27.1 Query CONSTRUCT para calcular os novos triplos da nova relação daBasesPara
+# Uma disciplina dá bases para uma aplicação se nessa disciplina se estuda um conceito 
+# que tem aplicação nessa área de aplicação
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+CONSTRUCT {
+  ?disciplina sapientia:daBasesPara ?aplicacao .
+}
+WHERE {
+  ?disciplina rdf:type sapientia:Disciplina .
+  ?aplicacao rdf:type sapientia:Aplicacao .
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:eEstudadoEm ?disciplina ;
+            sapientia:temAplicacaoEm ?aplicacao .
+}
+
+# 27.2 Query INSERT para adicionar os novos triplos da relação daBasesPara à ontologia
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sapientia: <http://www.sapientia.edu/ontology#>
+
+INSERT {
+  ?disciplina sapientia:daBasesPara ?aplicacao .
+}
+WHERE {
+  ?disciplina rdf:type sapientia:Disciplina .
+  ?aplicacao rdf:type sapientia:Aplicacao .
+  ?conceito rdf:type sapientia:Conceito ;
+            sapientia:eEstudadoEm ?disciplina ;
+            sapientia:temAplicacaoEm ?aplicacao .
+}

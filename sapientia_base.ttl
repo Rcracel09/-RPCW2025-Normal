@@ -1,0 +1,123 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sapientia: <http://www.sapientia.edu/ontology#> .
+
+# Declaração da Ontologia
+sapientia: rdf:type owl:Ontology ;
+    rdfs:label "Ontologia da Academia Sapientia" ;
+    rdfs:comment "Ontologia que representa o conhecimento da Academia Sapientia" .
+
+# Classes
+sapientia:TipoDeConhecimento rdf:type owl:Class ;
+    rdfs:label "Tipo de Conhecimento" ;
+    rdfs:comment "Categorias gerais de conhecimento, como Filosofia, Matemática, Linguística" .
+
+sapientia:Disciplina rdf:type owl:Class ;
+    rdfs:label "Disciplina" ;
+    rdfs:comment "Áreas específicas de estudo, como Filosofia Grega, Álgebra Linear, Programação Funcional" .
+
+sapientia:Obra rdf:type owl:Class ;
+    rdfs:label "Obra" ;
+    rdfs:comment "Trabalhos escritos, como Ética a Nicômaco, Principia Mathematica" .
+
+sapientia:Mestre rdf:type owl:Class ;
+    rdfs:label "Mestre" ;
+    rdfs:comment "Pessoas que ensinam e produzem conhecimento, como Aristóteles, Ada Lovelace" .
+
+sapientia:Aprendiz rdf:type owl:Class ;
+    rdfs:label "Aprendiz" ;
+    rdfs:comment "Estudantes que aprendem disciplinas" .
+
+sapientia:Conceito rdf:type owl:Class ;
+    rdfs:label "Conceito" ;
+    rdfs:comment "Ideias fundamentais, como Lógica Formal, Recursividade, Silogismo" .
+
+sapientia:PeriodoHistorico rdf:type owl:Class ;
+    rdfs:label "Período Histórico" ;
+    rdfs:comment "Épocas históricas, como Idade Antiga, Século XIX" .
+
+sapientia:Aplicacao rdf:type owl:Class ;
+    rdfs:label "Aplicação" ;
+    rdfs:comment "Usos práticos do conhecimento, como Robótica, Educação, Medicina" .
+
+# Object Properties (relações entre indivíduos)
+sapientia:ensina rdf:type owl:ObjectProperty ;
+    rdfs:label "ensina" ;
+    rdfs:comment "Relação que indica que um Mestre ensina uma Disciplina" ;
+    rdfs:domain sapientia:Mestre ;
+    rdfs:range sapientia:Disciplina .
+
+sapientia:aprende rdf:type owl:ObjectProperty ;
+    rdfs:label "aprende" ;
+    rdfs:comment "Relação que indica que um Aprendiz aprende uma Disciplina" ;
+    rdfs:domain sapientia:Aprendiz ;
+    rdfs:range sapientia:Disciplina .
+
+sapientia:estaRelacionadoCom rdf:type owl:ObjectProperty ;
+    rdfs:label "está relacionado com" ;
+    rdfs:comment "Relação que indica que um Conceito está relacionado com outro Conceito" ;
+    rdfs:domain sapientia:Conceito ;
+    rdfs:range sapientia:Conceito .
+
+sapientia:pertenceA rdf:type owl:ObjectProperty ;
+    rdfs:label "pertence a" ;
+    rdfs:comment "Relação que indica que uma Disciplina pertence a um Tipo de Conhecimento" ;
+    rdfs:domain sapientia:Disciplina ;
+    rdfs:range sapientia:TipoDeConhecimento .
+
+sapientia:explica rdf:type owl:ObjectProperty ;
+    rdfs:label "explica" ;
+    rdfs:comment "Relação que indica que uma Obra explica um Conceito" ;
+    rdfs:domain sapientia:Obra ;
+    rdfs:range sapientia:Conceito .
+
+sapientia:foiEscritoPor rdf:type owl:ObjectProperty ;
+    rdfs:label "foi escrito por" ;
+    rdfs:comment "Relação que indica que uma Obra foi escrita por um Mestre" ;
+    rdfs:domain sapientia:Obra ;
+    rdfs:range sapientia:Mestre .
+
+sapientia:eEstudadoEm rdf:type owl:ObjectProperty ;
+    rdfs:label "é estudado em" ;
+    rdfs:comment "Relação que indica que um Conceito é estudado em uma Disciplina" ;
+    rdfs:domain sapientia:Conceito ;
+    rdfs:range sapientia:Disciplina .
+
+sapientia:surgeEm rdf:type owl:ObjectProperty ;
+    rdfs:label "surge em" ;
+    rdfs:comment "Relação que indica que um Conceito surge em um Período Histórico" ;
+    rdfs:domain sapientia:Conceito ;
+    rdfs:range sapientia:PeriodoHistorico .
+
+sapientia:temAplicacaoEm rdf:type owl:ObjectProperty ;
+    rdfs:label "tem aplicação em" ;
+    rdfs:comment "Relação que indica que um Conceito tem aplicação em uma Aplicação" ;
+    rdfs:domain sapientia:Conceito ;
+    rdfs:range sapientia:Aplicacao .
+
+sapientia:ensinouEm rdf:type owl:ObjectProperty ;
+    rdfs:label "ensinou em" ;
+    rdfs:comment "Relação que indica que um Mestre ensinou em um Período Histórico" ;
+    rdfs:domain sapientia:Mestre ;
+    rdfs:range sapientia:PeriodoHistorico .
+
+# Data Properties (atributos dos indivíduos)
+sapientia:nome rdf:type owl:DatatypeProperty ;
+    rdfs:label "nome" ;
+    rdfs:comment "Nome de um recurso" ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string .
+
+sapientia:titulo rdf:type owl:DatatypeProperty ;
+    rdfs:label "título" ;
+    rdfs:comment "Título de uma obra" ;
+    rdfs:domain sapientia:Obra ;
+    rdfs:range xsd:string .
+
+sapientia:idade rdf:type owl:DatatypeProperty ;
+    rdfs:label "idade" ;
+    rdfs:comment "Idade de um Aprendiz" ;
+    rdfs:domain sapientia:Aprendiz ;
+    rdfs:range xsd:integer .
